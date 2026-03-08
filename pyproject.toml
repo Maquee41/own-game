@@ -1,0 +1,21 @@
+[project]
+name = "own-game"
+version = "0.1.0"
+description = "Monolith backend service for Jeopardy game"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp==3.9.3",
+    "aiohttp-apispec==3.0.0b2",
+    "aiohttp-session==2.12.0",
+    "alembic==1.13.1",
+    "asyncpg==0.29.0",
+    "cryptography==42.0.5",
+    "greenlet==3.0.3",
+    "marshmallow==3.21.0",
+    "pytest==8.0.2",
+    "pytest-aiohttp==1.0.5",
+    "pytest-asyncio==0.23.5",
+    "python-dotenv>=1.2.2",
+    "sqlalchemy==2.0.27",
+]
