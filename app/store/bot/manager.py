@@ -8,10 +8,10 @@ if typing.TYPE_CHECKING:
 
 
 class BotManager:
-    def __init__(self, app: "Application"):
+    def __init__(self, app: 'Application'):
         self.app = app
         self.bot = None
-        self.logger = getLogger("handler")
+        self.logger = getLogger('handler')
 
     async def handle_updates(self, updates: list[Update]):
         for update in updates:

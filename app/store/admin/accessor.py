@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class AdminAccessor(BaseAccessor):
-    async def connect(self, app: "Application") -> None:
+    async def connect(self, app: 'Application') -> None:
         await self.app.database.connect()
 
     async def get_by_email(self, email: str) -> AdminModel | None:

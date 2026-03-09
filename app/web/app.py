@@ -1,7 +1,8 @@
 from aiohttp.web import (
     Application as AiohttpApplication,
+)
+from aiohttp.web import (
     Request as AiohttpRequest,
-    View as AiohttpView,
 )
 from aiohttp_pydantic import PydanticView
 from aiohttp_pydantic.oas import setup as setup_pydantic_apispec
@@ -46,7 +47,7 @@ class View(PydanticView):
 
     @property
     def data(self) -> dict:
-        return self.request.get("data", {})
+        return self.request.get('data', {})
 
 
 app = Application()
@@ -57,7 +58,7 @@ def setup_app() -> Application:
     setup_config(app)
     session_setup(app, EncryptedCookieStorage(app.config.session.key))
     setup_routes(app)
-    setup_pydantic_apispec(app, title_spec="Own Game Bot", url_prefix="/docs")
+    setup_pydantic_apispec(app, title_spec='Own Game Bot', url_prefix='/docs')
     setup_middlewares(app)
     setup_store(app)
     return app

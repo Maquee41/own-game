@@ -11,9 +11,9 @@ from app.store.tg_api.poller import Poller
 if typing.TYPE_CHECKING:
     from app.web.app import Application
 
-API_HOST = "https://api.telegram.org"
+API_HOST = 'https://api.telegram.org'
 
-GREETING = "Hi!"
+GREETING = 'Hi!'
 
 
 class TelegramApiAccessor(BaseAccessor):
@@ -26,19 +26,19 @@ class TelegramApiAccessor(BaseAccessor):
         self.poller: Poller | None = None
         self.token: str = self.app.config.bot.token
 
-    async def connect(self, app: "Application") -> None:
+    async def connect(self, app: 'Application') -> None:
         self.session = ClientSession(connector=TCPConnector(verify_ssl=False))
 
         self.poller = Poller(app.store)
-        self.logger.info("start polling")
+        self.logger.info('start polling')
         self.poller.start()
 
-    async def disconnect(self, app: "Application"):
+    async def disconnect(self, app: 'Application'):
         if self.session:
             await self.session.close()
 
     def _build_query(self, method: str, params: dict) -> str:
-        return f"{API_HOST}/bot{self.token}/{method}?{urlencode(params)}"
+        return f'{API_HOST}/bot{self.token}/{method}?{urlencode(params)}'
 
     async def poll(
         self,
@@ -49,54 +49,54 @@ class TelegramApiAccessor(BaseAccessor):
     ) -> None:
         async with self.session.get(
             self._build_query(
-                method="getUpdates",
+                method='getUpdates',
                 params={
-                    "offset": self.offset,
-                    "limit": limit,
-                    "timeout": timeout,
-                    # "allowed_updates": allowed_updates,
+                    'offset': self.offset,
+                    'limit': limit,
+                    'timeout': timeout,
+                    # TODO: get only necessery updates configuring "allowed_updates"
                 },
             )
         ) as response:
             data = await response.json()
 
-            is_ok = data.get("ok", False)
+            is_ok = data.get('ok', False)
             if not is_ok:
                 self.logger.error(data)
-                raise RuntimeError("Telegram API returned an error")
+                raise RuntimeError('Telegram API returned an error')
 
             self.logger.info(data)
 
             updates = [
                 Update(
-                    update_id=update["update_id"],
+                    update_id=update['update_id'],
                     message=Message(
                         chat=Chat(
-                            id_=update["message"]["chat"]["id"],
+                            id_=update['message']['chat']['id'],
                         ),
                         from_=User(
-                            id_=update["message"]["from"]["id"],
-                            username=update["message"]["from"]["username"],
-                            first_name=update["message"]["from"]["first_name"],
-                            is_bot=update["message"]["from"]["is_bot"],
-                            language_code=update["message"]["from"]["language_code"],
+                            id_=update['message']['from']['id'],
+                            username=update['message']['from']['username'],
+                            first_name=update['message']['from']['first_name'],
+                            is_bot=update['message']['from']['is_bot'],
+                            language_code=update['message']['from']['language_code'],
                         ),
-                        text=update["message"]["text"],
+                        text=update['message']['text'],
                     ),
                 )
-                for update in data.get("result", [])
+                for update in data.get('result', [])
             ]
 
-            if len(data.get("result", [])) == 0:
+            if len(data.get('result', [])) == 0:
                 self.offset = -1
             else:
-                self.offset = data["result"][-1]["update_id"] + 1
+                self.offset = data['result'][-1]['update_id'] + 1
             await self.app.store.bot_manager.handle_updates(updates)
 
     async def get_me(self) -> None:
         async with self.session.get(
             self._build_query(
-                method="getMe",
+                method='getMe',
                 params={},
             )
         ) as response:
@@ -106,10 +106,10 @@ class TelegramApiAccessor(BaseAccessor):
     async def greeting(self, user_id: int) -> None:
         async with self.session.post(
             self._build_query(
-                method="sendMessage",
+                method='sendMessage',
                 params={
-                    "chat_id": user_id,
-                    "text": GREETING,
+                    'chat_id': user_id,
+                    'text': GREETING,
                 },
             )
         ) as response:

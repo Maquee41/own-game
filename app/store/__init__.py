@@ -7,7 +7,7 @@ if typing.TYPE_CHECKING:
 
 
 class Store:
-    def __init__(self, app: "Application"):
+    def __init__(self, app: 'Application'):
         from app.store.admin.accessor import AdminAccessor
         from app.store.bot.manager import BotManager
         from app.store.game.accessor import GameAccessor
@@ -20,7 +20,7 @@ class Store:
         self.tg_api = TelegramApiAccessor(app)
 
 
-def setup_store(app: "Application"):
+def setup_store(app: 'Application'):
     app.database = Database(app)
     app.on_startup.append(app.database.connect)
     app.on_cleanup.append(app.database.disconnect)

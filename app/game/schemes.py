@@ -23,12 +23,12 @@ class QuestionSchema(BaseSchema):
     theme_id: int
     answers: list[AnswerSchema]
 
-    @model_validator(mode="after")
+    @model_validator(mode='after')
     def check_answers(self):
         if len(self.answers) < 1:
-            raise ValueError("Question must contain at least one answer")
+            raise ValueError('Question must contain at least one answer')
 
         if not any(a.is_correct for a in self.answers):
-            raise ValueError("At least one answer must be correct")
-    
+            raise ValueError('At least one answer must be correct')
+
         return self

@@ -25,11 +25,11 @@ class BotConfig:
 
 @dataclass
 class DatabaseConfig:
-    host: str = "localhost"
-    port: int = 5432
-    user: str = "postgres"
-    password: str = "postgres"
-    database: str = "project"
+    host: str
+    port: int
+    user: str
+    password: str
+    database: str
 
 
 @dataclass
@@ -46,27 +46,27 @@ class Config:
     session: SessionConfig
 
 
-def setup_config(app: "Application"):
-    env_dict = dotenv.dotenv_values(".env")
+def setup_config(app: 'Application'):
+    env_dict = dotenv.dotenv_values('.env')
 
     app.config = Config(
         admin=AdminConfig(
-            email=env_dict["ADMIN_EMAIL"],
-            password=env_dict["ADMIN_PASS"],
+            email=env_dict['ADMIN_EMAIL'],
+            password=env_dict['ADMIN_PASS'],
         ),
-        app=AppConfig(debug=env_dict["DEBUG"] == "true"),
+        app=AppConfig(debug=env_dict['DEBUG'] == 'true'),
         bot=BotConfig(
-            token=env_dict["BOT_TOKEN"],
+            token=env_dict['BOT_TOKEN'],
         ),
         database=DatabaseConfig(
-            database=env_dict["PG_DB"],
-            host=env_dict["PG_HOST"],
-            port=env_dict["PG_PORT"],
-            user=env_dict["PG_USER"],
-            password=env_dict["PG_PASS"],
+            database=env_dict['PG_DB'],
+            host=env_dict['PG_HOST'],
+            port=env_dict['PG_PORT'],
+            user=env_dict['PG_USER'],
+            password=env_dict['PG_PASS'],
         ),
         session=SessionConfig(
-            key=env_dict["SESSION_KEY"],
+            key=env_dict['SESSION_KEY'],
         ),
     )
 

@@ -11,18 +11,18 @@ if typing.TYPE_CHECKING:
 
 
 HTTP_ERROR_CODES = {
-    400: "bad_request",
-    401: "unauthorized",
-    403: "forbidden",
-    404: "not_found",
-    405: "not_implemented",
-    409: "conflict",
-    500: "internal_server_error",
+    400: 'bad_request',
+    401: 'unauthorized',
+    403: 'forbidden',
+    404: 'not_found',
+    405: 'not_implemented',
+    409: 'conflict',
+    500: 'internal_server_error',
 }
 
 
 @middleware
-async def error_handling_middleware(request: "Request", handler):
+async def error_handling_middleware(request: 'Request', handler):
     try:
         response = await handler(request)
     except HTTPUnprocessableEntity as e:
@@ -39,13 +39,13 @@ async def error_handling_middleware(request: "Request", handler):
             message=str(e),
         )
     except Exception as e:
-        request.app.logger.error("Exception", exc_info=e)
+        request.app.logger.error('Exception', exc_info=e)
         return error_json_response(
-            http_status=500, status="internal server error", message=str(e)
+            http_status=500, status='internal server error', message=str(e)
         )
 
     return response
 
 
-def setup_middlewares(app: "Application"):
+def setup_middlewares(app: 'Application'):
     app.middlewares.append(error_handling_middleware)

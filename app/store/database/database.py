@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class Database:
-    def __init__(self, app: "Application") -> None:
+    def __init__(self, app: 'Application') -> None:
         self.app = app
 
         self.engine: AsyncEngine | None = None
@@ -26,7 +26,7 @@ class Database:
     async def connect(self, *args: Any, **kwargs: Any) -> None:
         self.engine = create_async_engine(
             URL.create(
-                drivername="postgresql+asyncpg",
+                drivername='postgresql+asyncpg',
                 username=self.app.config.database.user,
                 password=self.app.config.database.password,
                 host=self.app.config.database.host,
