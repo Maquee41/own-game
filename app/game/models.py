@@ -1,7 +1,7 @@
 from datetime import datetime
 import enum
 
-from sqlalchemy import BigInteger, Enum, JSON, DateTime, ForeignKey, String
+from sqlalchemy import BigInteger, JSON, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.store.database.sqlalchemy_base import BaseModel
@@ -70,7 +70,7 @@ class MatchModel(BaseModel):
     )
     start_at: Mapped[datetime] = mapped_column(DateTime)
     end_at: Mapped[datetime] = mapped_column(DateTime)
-    status: Mapped[MatchStatus] = mapped_column(Enum(MatchStatus))
+    status: Mapped[MatchStatus] = mapped_column(String(10))
     users: Mapped[list[str]] = mapped_column(JSON, nullable=False)
     results: Mapped[dict[str, float]] = mapped_column(JSON, nullable=False)
 
@@ -85,7 +85,7 @@ class RoomModel(BaseModel):
     __tablename__ = "rooms"
 
     chat_id: Mapped[str] = mapped_column(BigInteger, unique=True)
-    status: Mapped[RoomStatus] = mapped_column(Enum(RoomStatus))
+    status: Mapped[RoomStatus] = mapped_column(String(10))
     theme_id: Mapped[int] = mapped_column(
         ForeignKey("themes.id", ondelete="SET NULL"),
     )
