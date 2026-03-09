@@ -5,8 +5,8 @@ description = "Monolith backend service for Jeopardy game"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "aiohttp==3.9.3",
-    "aiohttp-apispec==3.0.0b2",
+    "aiohttp>=3.13.3",
+    "aiohttp-pydantic>=2.6.0",
     "aiohttp-session==2.12.0",
     "alembic==1.13.1",
     "asyncpg==0.29.0",

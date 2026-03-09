@@ -3,7 +3,6 @@ import typing
 
 from aiohttp.web_exceptions import HTTPException, HTTPUnprocessableEntity
 from aiohttp.web_middlewares import middleware
-from aiohttp_apispec import validation_middleware
 
 from app.web.utils import error_json_response
 
@@ -50,4 +49,3 @@ async def error_handling_middleware(request: "Request", handler):
 
 def setup_middlewares(app: "Application"):
     app.middlewares.append(error_handling_middleware)
-    app.middlewares.append(validation_middleware)

@@ -1,4 +1,4 @@
-from aiohttp_apispec import docs, request_schema, response_schema
+from aiohttp_pydantic.oas.typing import r200
 
 from app.admin.schemes import AdminSchema
 from app.web.app import View
@@ -7,17 +7,22 @@ from app.web.app import View
 # TODO
 # Write admin login view
 class AdminLoginView(View):
-    @docs(tags=["admin"])
-    @request_schema(AdminSchema)
-    @response_schema(AdminSchema, 200)
-    async def post(self):
+    async def post(self, admin: AdminSchema) -> r200[AdminSchema]:
+        """
+        Login admin
+
+        Tags: admin
+        """
         raise NotImplementedError
 
 
 # TODO
 # Write admin "me" route
 class AdminCurrentView(View):
-    @docs(tags=["admin"])
-    @response_schema(AdminSchema, 200)
-    async def get(self):
+    async def get(self) -> r200[AdminSchema]:
+        """
+        Get yourself
+
+        Tags: admin
+        """
         raise NotImplementedError

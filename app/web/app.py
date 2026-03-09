@@ -3,7 +3,8 @@ from aiohttp.web import (
     Request as AiohttpRequest,
     View as AiohttpView,
 )
-from aiohttp_apispec import setup_aiohttp_apispec
+from aiohttp_pydantic import PydanticView
+from aiohttp_pydantic.oas import setup as setup_pydantic_apispec
 from aiohttp_session import setup as session_setup
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 
@@ -30,7 +31,7 @@ class Request(AiohttpRequest):
         return super().app()
 
 
-class View(AiohttpView):
+class View(PydanticView):
     @property
     def request(self) -> Request:
         return super().request
@@ -56,9 +57,7 @@ def setup_app() -> Application:
     setup_config(app)
     session_setup(app, EncryptedCookieStorage(app.config.session.key))
     setup_routes(app)
-    setup_aiohttp_apispec(
-        app, title="Own Game Bot", url="/docs/json", swagger_path="/docs"
-    )
+    setup_pydantic_apispec(app, title_spec="Own Game Bot", url_prefix="/docs")
     setup_middlewares(app)
     setup_store(app)
     return app
