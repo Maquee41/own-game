@@ -1,11 +1,11 @@
 import typing
-from urllib.parse import urlencode, urljoin
+from urllib.parse import urlencode
 
 from aiohttp import TCPConnector
 from aiohttp.client import ClientSession
 
 from app.base.base_accessor import BaseAccessor
-from app.store.tg_api.dataclasses import Chat, Message, MessageEntity, Update, User
+from app.store.tg_api.dataclasses import Chat, Message, Update, User
 from app.store.tg_api.poller import Poller
 
 if typing.TYPE_CHECKING:

@@ -1,6 +1,6 @@
-from marshmallow import Schema, fields
+from pydantic import BaseModel
 
 
-class OkResponseSchema(Schema):
-    status = fields.Str()
-    data = fields.Dict()
+class OkResponseSchema(BaseModel):
+    status: str
+    data: dict

@@ -12,7 +12,7 @@ dependencies = [
     "asyncpg==0.29.0",
     "cryptography==42.0.5",
     "greenlet==3.0.3",
-    "marshmallow==3.21.0",
+    "pydantic>=2.12.5",
     "pytest==8.0.2",
     "pytest-aiohttp==1.0.5",
     "pytest-asyncio==0.23.5",

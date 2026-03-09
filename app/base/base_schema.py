@@ -1,5 +1,5 @@
-from marshmallow import Schema, fields
+from pydantic import BaseModel
 
 
-class BaseSchema(Schema):
-    id = fields.Int(required=False)
+class BaseSchema(BaseModel):
+    id: int | None = None

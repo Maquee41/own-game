@@ -1,24 +1,34 @@
-from marshmallow import fields
+from pydantic import model_validator
 
 from app.base.base_schema import BaseSchema
 
 
 class UserSchema(BaseSchema):
-    username = fields.Str(required=True)
-    tg_id = fields.Int(required=True)
-    score = fields.Float(required=True)
+    username: str
+    tg_id: int
+    score: float
 
 
 class ThemeSchema(BaseSchema):
-    title = fields.Str(required=True)
+    title: str
 
 
 class AnswerSchema(BaseSchema):
-    title = fields.Str(required=True)
-    is_correct = fields.Bool(required=True)
+    title: str
+    is_correct: bool
 
 
 class QuestionSchema(BaseSchema):
-    title = fields.Str(required=True)
-    theme_id = fields.Int(required=True)
-    answers = fields.Nested(AnswerSchema, many=True, required=True)
+    title: str
+    theme_id: int
+    answers: list[AnswerSchema]
+
+    @model_validator(mode="after")
+    def check_answers(self):
+        if len(self.answers) < 1:
+            raise ValueError("Question must contain at least one answer")
+
+        if not any(a.is_correct for a in self.answers):
+            raise ValueError("At least one answer must be correct")
+    
+        return self

@@ -1,5 +1,5 @@
 import asyncio
-from asyncio import Future, Task, sleep
+from asyncio import Future, Task
 
 from app.store import Store
 
