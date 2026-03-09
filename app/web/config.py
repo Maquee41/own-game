@@ -51,7 +51,7 @@ def setup_config(app: "Application"):
 
     app.config = Config(
         admin=AdminConfig(
-            email=env_dict["ADMIN_EAMAIL"],
+            email=env_dict["ADMIN_EMAIL"],
             password=env_dict["ADMIN_PASS"],
         ),
         app=AppConfig(debug=env_dict["DEBUG"] == "true"),
