@@ -1,4 +1,5 @@
 from collections.abc import Iterable, Sequence
+from datetime import datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -6,8 +7,13 @@ from sqlalchemy.orm import selectinload
 from app.base.base_accessor import BaseAccessor
 from app.game.models import (
     AnswerModel,
+    MatchModel,
+    MatchStatus,
     QuestionModel,
+    RoomModel,
+    RoomStatus,
     ThemeModel,
+    UserModel,
 )
 
 
@@ -66,3 +72,62 @@ class GameAccessor(BaseAccessor):
         async with self.app.database.session() as session:
             questions = await session.scalars(stmt)
             return questions.all()
+
+    async def create_room(
+        self,
+        chat_id: int,
+        status: RoomStatus,
+        theme_id: int,
+        state: dict,
+    ) -> RoomModel:
+        async with self.app.database.session() as session:
+            room_model = RoomModel(
+                chat_id=chat_id,
+                status=status.value,
+                theme_id=theme_id,
+                state=state,
+            )
+            session.add(room_model)
+            await session.commit()
+            return room_model
+
+    async def create_match(
+        self,
+        room_id: int,
+        winner_id: int,
+        start_at: datetime,
+        end_at: datetime,
+        status: MatchStatus,
+        users: Iterable[UserModel],
+        results: dict[str, int],
+    ) -> MatchModel:
+        async with self.app.database.session() as session:
+            match_model = MatchModel(
+                room_id=room_id,
+                winner_id=winner_id,
+                start_at=start_at,
+                end_at=end_at,
+                status=status.value,
+                users=users,
+                results=results,
+            )
+            session.add(match_model)
+            await session.commit()
+            return match_model
+
+    async def create_user(self, username: str, tg_id: int, score: int) -> UserModel:
+        async with self.app.database.session() as session:
+            user_model = UserModel(
+                username=username,
+                tg_id=tg_id,
+                score=score,
+            )
+            session.add(user_model)
+            await session.commit()
+            return user_model
+
+    async def get_user_by_tg(self, tg_id: int) -> UserModel | None:
+        stmt = select(UserModel).where(UserModel.tg_id == tg_id)
+        async with self.app.database.session() as session:
+            user = await session.scalars(stmt)
+            return user.first()

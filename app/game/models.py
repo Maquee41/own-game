@@ -72,7 +72,7 @@ class MatchModel(BaseModel):
     end_at: Mapped[datetime] = mapped_column(DateTime)
     status: Mapped[MatchStatus] = mapped_column(String(10))
     users: Mapped[list[str]] = mapped_column(JSON, nullable=False)
-    results: Mapped[dict[str, float]] = mapped_column(JSON, nullable=False)
+    results: Mapped[dict[str, int]] = mapped_column(JSON, nullable=False)
 
 
 class RoomStatus(enum.Enum):
@@ -84,7 +84,7 @@ class RoomStatus(enum.Enum):
 class RoomModel(BaseModel):
     __tablename__ = 'rooms'
 
-    chat_id: Mapped[str] = mapped_column(BigInteger, unique=True)
+    chat_id: Mapped[int] = mapped_column(BigInteger, unique=True)
     status: Mapped[RoomStatus] = mapped_column(String(10))
     theme_id: Mapped[int] = mapped_column(
         ForeignKey('themes.id', ondelete='SET NULL'),
@@ -97,4 +97,4 @@ class UserModel(BaseModel):
 
     username: Mapped[str] = mapped_column(unique=True)
     tg_id: Mapped[int] = mapped_column(BigInteger, unique=True)
-    score: Mapped[int] = mapped_column()
+    score: Mapped[int] = mapped_column(default=0)

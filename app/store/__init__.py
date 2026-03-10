@@ -14,8 +14,8 @@ class Store:
         from app.store.tg_api.accessor import TelegramApiAccessor
 
         self.app = app
-        self.bot_manager = BotManager(self.app)
         self.admins = AdminAccessor(app)
+        self.bot_manager = BotManager(app)
         self.game = GameAccessor(app)
         self.tg_api = TelegramApiAccessor(app)
 
