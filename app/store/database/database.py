@@ -40,4 +40,4 @@ class Database:
         )
 
     async def disconnect(self, *args: Any, **kwargs: Any) -> None:
-        raise NotImplementedError
+        await self.engine.dispose()

@@ -32,4 +32,4 @@ class Poller:
 
     async def poll(self) -> None:
         while self.is_running:
-            await self.store.tg_api.poll()
+            await self.store.tg_api.bot_manager.poll()
