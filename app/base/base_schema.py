@@ -1,5 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BaseSchema(BaseModel):
-    id: int | None = None
+    id_: int | None = Field(alias='id', default=None)
