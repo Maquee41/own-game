@@ -47,8 +47,16 @@ class Message(BaseModel):
     entities: list[MessageEntity] | None = None
 
 
+class CallbackQuery(BaseModel):
+    id_: int = Field(alias='id')
+    from_: User = Field(alias='from')
+    data: str | None = None
+    message: Message | None = None
+
+
 class Update(BaseModel):
     update_id: int
+    callback_query: CallbackQuery | None = None
     message: Message | None = None
 
 

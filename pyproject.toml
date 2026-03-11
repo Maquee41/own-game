@@ -85,6 +85,10 @@ exclude = [
     "migrations/versions/**",
 ]
 
+ignore = [
+    "RUF001", # Checks for ambiguous Unicode characters in strings.
+]
+
 [tool.ruff.format]
 quote-style = "single"
 indent-style = "space"
