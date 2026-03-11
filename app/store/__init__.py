@@ -14,8 +14,8 @@ class Store:
 
         self.app = app
         self.admins = AdminAccessor(app)
+        self.bot = TelegramApiAccessor(app)
         self.game = GameAccessor(app)
-        self.tg_api = TelegramApiAccessor(app)
 
 
 def setup_store(app: 'Application'):

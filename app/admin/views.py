@@ -1,6 +1,6 @@
 from aiohttp_pydantic.oas.typing import r200
 
-from app.admin.schemes import AdminSchema
+from app.admin.schemas import AdminSchema
 from app.web.app import View
 
 

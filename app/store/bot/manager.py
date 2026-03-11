@@ -1,43 +1,42 @@
 import typing
 from logging import getLogger
 
-from aiohttp import ClientSession, TCPConnector
-
 from app.store.bot.api import BotApi
 from app.store.bot.poller import Poller
 from app.store.bot.router import Router
-from app.store.bot.schemes import UpdateList
+from app.store.bot.schemas import UpdateList
 
 if typing.TYPE_CHECKING:
     from app.web.app import Application
-
-API_HOST = 'https://api.telegram.org'
 
 
 class BotManager:
     def __init__(self, app: 'Application'):
         self.app = app
         self.api = BotApi(self.app.config.bot.token)
-        self.bot = None
-        self.logger = getLogger('handler')
-        self.offset: int | None = None
+        self.logger = getLogger('bot_manager')
         self.poller: Poller | None = None
         self.router: Router | None = None
-        self.session: ClientSession | None = None
 
     async def connect(self):
-        self.session = ClientSession(connector=TCPConnector(verify_ssl=False))
+        if self.router is None:
+            raise RuntimeError('Router is not setup')
+
+        await self.api.connect()
         await self.poller_start()
 
     async def disconnect(self):
-        if self.session:
-            await self.session.close()
+        if self.poller:
+            await self.poller.stop()
 
-    async def setup_router(self, router: Router) -> None:
+        await self.api.disconnect()
+
+    def setup_router(self, router: Router) -> None:
         self.router = router
 
     async def poller_start(self):
-        self.poller = Poller(self.app.store)
+        if self.poller is None:
+            self.poller = Poller(self.app.store)
         self.logger.info('start polling')
         self.poller.start()
 
@@ -52,10 +51,10 @@ class BotManager:
 
         self.logger.debug(updates)
 
-        if len(updates.result) == 0:
-            self.offset = -1
-        else:
-            self.offset = updates.result[-1].update_id + 1
+        if not updates.result:
+            return
+
+        self.api.offset = updates.result[-1].update_id + 1
 
         await self.handle_updates(updates)
 

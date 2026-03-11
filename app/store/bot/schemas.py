@@ -3,7 +3,7 @@ import enum
 from pydantic import BaseModel, Field
 
 
-class ChatTypeEnum(enum.Enum):
+class ChatTypeEnum(enum.StrEnum):
     CHANNEL = 'channel'
     GROUP = 'group'
     PRIVATE = 'private'
@@ -20,11 +20,11 @@ class User(BaseModel):
     id_: int = Field(alias='id')
     is_bot: bool
     first_name: str
-    username: str
-    language_code: str
+    username: str | None = None
+    language_code: str | None = None
 
 
-class MessageEntityEnum(enum.Enum):
+class MessageEntityEnum(enum.StrEnum):
     BOT_COMMAND = 'bot_command'
     CASHTAG = 'cashtag'
     EMAIL = 'email'
@@ -54,4 +54,4 @@ class Update(BaseModel):
 
 class UpdateList(BaseModel):
     ok: bool
-    result: list[Update] | None = None
+    result: list[Update] = Field(default_factory=list)
