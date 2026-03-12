@@ -54,8 +54,8 @@ app = Application()
 
 
 def setup_app() -> Application:
-    setup_logging(app)
     setup_config(app)
+    setup_logging(app)
     session_setup(app, EncryptedCookieStorage(app.config.session.key))
     setup_routes(app)
     setup_pydantic_apispec(app, title_spec='Own Game Bot', url_prefix='/docs')

@@ -1,30 +1,26 @@
 import typing
-from dataclasses import dataclass
 
 import dotenv
+from pydantic import BaseModel
 
 if typing.TYPE_CHECKING:
     from app.web.app import Application
 
 
-@dataclass
-class AppConfig:
+class AppConfig(BaseModel):
     debug: bool
 
 
-@dataclass
-class AdminConfig:
+class AdminConfig(BaseModel):
     email: str
     password: str
 
 
-@dataclass
-class BotConfig:
+class BotConfig(BaseModel):
     token: str
 
 
-@dataclass
-class DatabaseConfig:
+class DatabaseConfig(BaseModel):
     host: str
     port: int
     user: str
@@ -32,13 +28,11 @@ class DatabaseConfig:
     database: str
 
 
-@dataclass
-class SessionConfig:
+class SessionConfig(BaseModel):
     key: str
 
 
-@dataclass
-class Config:
+class Config(BaseModel):
     admin: AdminConfig
     app: AppConfig
     bot: BotConfig
@@ -50,18 +44,18 @@ def setup_config(app: 'Application'):
     env_dict = dotenv.dotenv_values('.env')
 
     app.config = Config(
+        app=AppConfig(debug=env_dict['DEBUG'] == 'true'),
         admin=AdminConfig(
             email=env_dict['ADMIN_EMAIL'],
             password=env_dict['ADMIN_PASS'],
         ),
-        app=AppConfig(debug=env_dict['DEBUG'] == 'true'),
         bot=BotConfig(
             token=env_dict['BOT_TOKEN'],
         ),
         database=DatabaseConfig(
             database=env_dict['PG_DB'],
             host=env_dict['PG_HOST'],
-            port=env_dict['PG_PORT'],
+            port=int(env_dict['PG_PORT']),
             user=env_dict['PG_USER'],
             password=env_dict['PG_PASS'],
         ),
@@ -69,5 +63,3 @@ def setup_config(app: 'Application'):
             key=env_dict['SESSION_KEY'],
         ),
     )
-
-    app.logger.debug(app.config)
