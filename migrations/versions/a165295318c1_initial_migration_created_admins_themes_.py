@@ -1,8 +1,8 @@
 """Initial migration. Created Admins, Themes, Questions, Answers, Rooms, Matches and Users
 
-Revision ID: 4e97e5f073dc
+Revision ID: a165295318c1
 Revises: 
-Create Date: 2026-03-09 05:46:34.315161
+Create Date: 2026-03-13 03:36:22.907827
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '4e97e5f073dc'
+revision: str = 'a165295318c1'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -34,7 +34,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('title')
     )
     op.create_table('users',
-    sa.Column('username', sa.String(), nullable=False),
+    sa.Column('username', sa.String(), nullable=True),
     sa.Column('tg_id', sa.BigInteger(), nullable=False),
     sa.Column('score', sa.Integer(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
@@ -69,15 +69,12 @@ def upgrade() -> None:
     )
     op.create_table('matches',
     sa.Column('room_id', sa.Integer(), nullable=False),
-    sa.Column('winner_id', sa.Integer(), nullable=False),
     sa.Column('start_at', sa.DateTime(), nullable=False),
-    sa.Column('end_at', sa.DateTime(), nullable=False),
+    sa.Column('end_at', sa.DateTime(), nullable=True),
     sa.Column('status', sa.String(length=10), nullable=False),
-    sa.Column('users', sa.JSON(), nullable=False),
-    sa.Column('results', sa.JSON(), nullable=False),
+    sa.Column('results', sa.JSON(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['room_id'], ['rooms.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['winner_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
