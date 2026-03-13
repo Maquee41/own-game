@@ -1,4 +1,6 @@
-from pydantic import model_validator
+from datetime import datetime
+
+from pydantic import BaseModel, model_validator
 
 from app.base.base_schema import BaseSchema
 
@@ -32,3 +34,23 @@ class QuestionSchema(BaseSchema):
             raise ValueError('At least one answer must be correct')
 
         return self
+
+
+class Player(BaseModel):
+    tg_id: str
+    confirmed: bool = False
+    score: int = 0
+
+
+class RoomState(BaseModel):
+    message_id: int | None = None
+    players: list[Player] = []
+    theme_id: int | None = None
+    current_question_id: int | None = None
+    question_ids: list[int]
+    current_question_id: int
+    question_opened_at: datetime
+    answered_users_ids: list[int]
+    user_id_answer: int
+    button_enable: bool
+    deadline: datetime

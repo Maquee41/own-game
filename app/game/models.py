@@ -1,9 +1,9 @@
-import enum
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import JSON, BigInteger, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.game.types import MatchStatus, RoomStatus
 from app.store.database.sqlalchemy_base import BaseModel
 
 
@@ -50,13 +50,6 @@ class QuestionModel(BaseModel):
     )
 
 
-class MatchStatus(enum.Enum):
-    ABORTED = 'aborted'
-    ACTIVE = 'active'
-    FINISHED = 'finished'
-    STATING = 'starting'
-
-
 class MatchModel(BaseModel):
     __tablename__ = 'matches'
 
@@ -64,21 +57,10 @@ class MatchModel(BaseModel):
         ForeignKey('rooms.id', ondelete='CASCADE'),
         nullable=False,
     )
-    winner_id: Mapped[int] = mapped_column(
-        ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
-    )
-    start_at: Mapped[datetime] = mapped_column(DateTime)
-    end_at: Mapped[datetime] = mapped_column(DateTime)
+    start_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(UTC))
+    end_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     status: Mapped[MatchStatus] = mapped_column(String(10))
-    users: Mapped[list[str]] = mapped_column(JSON, nullable=False)
-    results: Mapped[dict[str, int]] = mapped_column(JSON, nullable=False)
-
-
-class RoomStatus(enum.Enum):
-    ACTIVE = 'active'
-    FREE = 'free'
-    SEARCH = 'search'
+    results: Mapped[dict[str, int]] = mapped_column(JSON, nullable=True)
 
 
 class RoomModel(BaseModel):
@@ -95,6 +77,6 @@ class RoomModel(BaseModel):
 class UserModel(BaseModel):
     __tablename__ = 'users'
 
-    username: Mapped[str] = mapped_column(unique=True)
+    username: Mapped[str] = mapped_column(unique=True, nullable=True)
     tg_id: Mapped[int] = mapped_column(BigInteger, unique=True)
     score: Mapped[int] = mapped_column(default=0)
