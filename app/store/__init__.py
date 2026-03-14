@@ -1,5 +1,6 @@
 import typing
 
+from app.store.bot.accessor import BotAccessor
 from app.store.database.database import Database
 
 if typing.TYPE_CHECKING:
@@ -9,12 +10,11 @@ if typing.TYPE_CHECKING:
 class Store:
     def __init__(self, app: 'Application'):
         from app.store.admin.accessor import AdminAccessor
-        from app.store.bot.accessor import TelegramApiAccessor
         from app.store.game.accessor import GameAccessor
 
         self.app = app
         self.admins = AdminAccessor(app)
-        self.bot = TelegramApiAccessor(app)
+        self.bot = BotAccessor(app)
         self.game = GameAccessor(app)
 
 

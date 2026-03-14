@@ -1,22 +1,22 @@
 import typing
 
+from app.aiotg.client.bot import Bot
 from app.base.base_accessor import BaseAccessor
-from app.store.bot.manager import BotManager
-from app.store.bot.routes import setup_router
+from app.bot.bot import dp as bot_dispatcher
 
 if typing.TYPE_CHECKING:
     from app.web.app import Application
 
 
-class TelegramApiAccessor(BaseAccessor):
+class BotAccessor(BaseAccessor):
     def __init__(self, app: 'Application'):
         super().__init__(app)
 
-        self.manager: BotManager = BotManager(app)
-        self.manager.setup_router(setup_router(app))
+        self.app = app
 
-    async def connect(self, app: 'Application') -> None:
-        await self.manager.connect()
+    async def connect(self, app: 'Application'):
+        await self.start_bot()
 
-    async def disconnect(self, app: 'Application'):
-        await self.manager.disconnect()
+    async def start_bot(self):
+        async with Bot(self.app.config.bot.token) as bot:
+            await bot_dispatcher.start_polling(bot)
