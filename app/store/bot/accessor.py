@@ -18,5 +18,7 @@ class BotAccessor(BaseAccessor):
         await self.start_bot()
 
     async def start_bot(self):
+        bot_dispatcher.bind_store(self.app.store)
+
         async with Bot(self.app.config.bot.token) as bot:
             await bot_dispatcher.start_polling(bot)

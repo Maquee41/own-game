@@ -1,12 +1,16 @@
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from app.aiotg.client.bot import Bot
 from app.aiotg.methods.get_updates import get_updates
 from app.aiotg.types.update import Update
 
-CommandHandler = Callable[[Bot, Update], Awaitable[None]]
-CallbackHandler = Callable[[Bot, Update], Awaitable[None]]
+if TYPE_CHECKING:
+    from app.store import Store
+
+CommandHandler = Callable[[Bot, 'Store', Update], Awaitable[None]]
+CallbackHandler = Callable[[Bot, 'Store', Update], Awaitable[None]]
 
 
 @dataclass(slots=True)
@@ -25,6 +29,10 @@ class Dispatcher:
     def __init__(self) -> None:
         self.command_handlers: dict[str, list[CommandRoute]] = {}
         self.callback_handlers: dict[str, list[CallbackRoute]] = {}
+        self.store: 'Store | None' = None
+
+    def bind_store(self, store: 'Store') -> None:
+        self.store = store
 
     def command(self, name: str, chat_types: set[str] | None = None):
         def decorator(func: CommandHandler):
@@ -43,6 +51,9 @@ class Dispatcher:
         return decorator
 
     async def feed_update(self, bot: Bot, update: Update) -> None:
+        if self.store is None:
+            raise RuntimeError('Dispatcher store is not bound')
+
         if update.message and update.message.text:
             text = update.message.text.strip()
             chat_type = update.message.chat.type_
@@ -53,7 +64,7 @@ class Dispatcher:
 
                 for route in routes:
                     if route.chat_types is None or chat_type in route.chat_types:
-                        await route.handler(bot, update)
+                        await route.handler(bot, self.store, update)
                         return
 
         if update.callback_query and update.callback_query.data:
@@ -67,11 +78,20 @@ class Dispatcher:
                 if data.startswith(prefix):
                     for route in routes:
                         if route.chat_types is None or chat_type in route.chat_types:
-                            await route.handler(bot, update)
+                            await route.handler(bot, self.store, update)
                             return
 
     async def start_polling(self, bot: Bot) -> None:
         offset: int | None = None
+
+        old_updates = await get_updates(
+            bot,
+            offset=None,
+            timeout=0,
+            allowed_updates=['message', 'callback_query'],
+        )
+        if old_updates:
+            offset = old_updates[-1].update_id + 1
 
         while True:
             updates = await get_updates(

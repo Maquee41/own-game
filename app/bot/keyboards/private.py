@@ -1,17 +1,16 @@
 from app.aiotg.types.keyboard import KeyboardButton, ReplyKeyboardMarkup
 
 
-def start_nav() -> dict:
-    kb = ReplyKeyboardMarkup(
+def private_menu_kb() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
         keyboard=[
             [
-                KeyboardButton(text='Помощь'),
-                KeyboardButton(text='О боте'),
+                KeyboardButton(text='/help'),
+                KeyboardButton(text='/about'),
             ],
             [
-                KeyboardButton(text='Как играть?'),
+                KeyboardButton(text='/play'),
             ],
-        ]
+        ],
+        resize_keyboard=True,
     )
-
-    return kb.model_dump()

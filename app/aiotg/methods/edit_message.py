@@ -1,5 +1,6 @@
 from app.aiotg.client.bot import Bot
 from app.aiotg.types.message import Message
+from app.aiotg.types.keyboard import InlineKeyboardMarkup, ReplyKeyboardMarkup
 
 
 async def edit_message(
@@ -7,7 +8,7 @@ async def edit_message(
     chat_id: int,
     message_id: int,
     text: str,
-    reply_markup: dict | None = None,
+    reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | None = None,
 ) -> Message | bool:
     data = {
         'chat_id': chat_id,
@@ -16,7 +17,7 @@ async def edit_message(
     }
 
     if reply_markup is not None:
-        data['reply_markup'] = reply_markup
+        data['reply_markup'] = reply_markup.model_dump()
 
     return await bot.request(
         'editMessageText',

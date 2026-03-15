@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 from app.base.base_schema import BaseSchema
 
@@ -37,20 +37,19 @@ class QuestionSchema(BaseSchema):
 
 
 class Player(BaseModel):
-    tg_id: str
+    tg_id: int
     confirmed: bool = False
     score: int = 0
 
 
 class RoomState(BaseModel):
     message_id: int | None = None
-    players: list[Player] = []
+    players: list[Player] = Field(default_factory=list)
     theme_id: int | None = None
     current_question_id: int | None = None
-    question_ids: list[int]
-    current_question_id: int
-    question_opened_at: datetime
-    answered_users_ids: list[int]
-    user_id_answer: int
-    button_enable: bool
-    deadline: datetime
+    question_ids: list[int] = Field(default_factory=list)
+    question_opened_at: datetime | None = None
+    answered_users_ids: list[int] = Field(default_factory=list)
+    user_id_answer: int | None = None
+    button_enable: bool = False
+    deadline: datetime | None = None

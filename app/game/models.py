@@ -68,9 +68,6 @@ class RoomModel(BaseModel):
 
     chat_id: Mapped[int] = mapped_column(BigInteger, unique=True)
     status: Mapped[RoomStatus] = mapped_column(String(10))
-    theme_id: Mapped[int] = mapped_column(
-        ForeignKey('themes.id', ondelete='SET NULL'),
-    )
     state: Mapped[dict] = mapped_column(JSON, default={})
 
 

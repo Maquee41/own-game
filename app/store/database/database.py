@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-from app.store.database import BaseModel
+from app.store.database.sqlalchemy_base import BaseModel
 
 if TYPE_CHECKING:
     from app.web.app import Application
